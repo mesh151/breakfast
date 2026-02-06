@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>產品列表</title>
+  <link rel="icon" href="LOGO_color.png" type="image/png">
+  <link rel="apple-touch-icon" sizes="180x180" href="LOGO_color.png">
+
+  <style>
+    /* 所有頁面共用的樣式 */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI","Noto Sans TC", sans-serif;
+        background:#E0D9D3;
+        margin: 0;
+        padding: 0;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+    }
+
+    a{color:#f6f5f3;}
+
+    .page {
+      background: #F6F5F3;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+      display: none;   /* 預設全部隱藏 */
+    }
+
+    /* 目前顯示的頁面 */
+    .page.active {
+      background: #f6f5f3;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .card_bottom {
+      background: #94785a;
+      padding: 24px;
+      text-align: center;
+      display: flex;          /* 關鍵 */
+      align-items: center;    /* 垂直置中 */
+      justify-content: center;/* 整組水平置中 */
+      gap: 12px;              /* 圖跟字的間距 */
+    }
+
+    .menu-item {
+        display: flex;              /* 啟用彈性盒模型 */
+        justify-content: space-between; /* 左右兩端對齊 */
+        align-items: center;        /* 垂直置中 */
+        padding: 4px 12px;          /* 上下左右內距 */
+        border-bottom: 1px solid #eee; /* 分隔線 */
+        max-width: 100%;            /* 不超過父容器 */
+        box-sizing: border-box;     /* padding 算在寬度內 */
+        flex-wrap: wrap;
+    }
+
+    .left, .right {
+        white-space: nowrap; /* 不折行 */
+    }
+
+    .like {
+      position: relative;
+    }
+
+    .like::before {
+      content: "";
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      background-image: url("good.png"); /* 你的讚圖 */
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    button {
+      background: #94785A;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+        .card_bottom img {
+            height: 37px;
+        }
+
+        .topfont {
+            color: #f6f5f3;
+            font-size: 28px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 24px;
+            text-align: center;
+            width: 100%;
+            flex:1;
+            box-sizing:border-box;
+
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            color:#F6F5F3;
+            font-size: 16px;
+        }
+
+        .left {
+            font-family: -apple-system, BlinkMacSystemFont,"Noto Sans TC", sans-serif;
+            font-size: 18px;
+        }
+
+        .right {
+            font-family: -apple-system, BlinkMacSystemFont,"Noto Sans TC", sans-serif;
+            font-size: 16px;
+        }
+
+        .smallfont{
+            color: #555;
+            font-size: 14px;
+        }
+
+        .bottomfont{
+            color: #f6f5f3;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+    }
+
+/* 平板以上 / 電腦 */
+    @media (min-width: 481px) {
+        .card_bottom img {
+            height: 75px;
+        }
+
+        .topfont {
+            color: #f6f5f3;
+            font-size: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px;
+            text-align: center;
+            width: 100%;
+            flex:1;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            color:#F6F5F3;
+            font-size: 16px;
+        }
+
+        .left {
+            font-family: -apple-system, BlinkMacSystemFont,"Noto Sans TC", sans-serif;
+            font-size: 18px;
+        }
+
+        .right {
+            font-family: -apple-system, BlinkMacSystemFont,"Noto Sans TC", sans-serif;
+            font-size: 16px;
+        }
+
+        .smallfont{
+            color: #555;
+            font-size: 14px;
+        }
+
+        .bottomfont{
+            color: #f6f5f3;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+    }
+
+  </style>
+</head>
+
+<body>
+    <div class="card_bottom topfont">
+        <img src="LOGO_color.png">餐車早餐店
+    </div>
+     <div class="container">
+        <!-- 導覽按鈕 -->
+        <button onclick="AllPage()"><h2>全品項</h2></button>
+        <button onclick="showPage('hb')"><h2>漢堡類</h2></button>
+        <button onclick="showPage('ts')"><h2>吐司類</h2></button>
+        <button onclick="showPage('tb')"><h2>蛋餅類</h2></button>
+        <button onclick="showPage('zs')"><h2>中式類</h2></button>
+        <button onclick="showPage('iz')"><h2>飲料類</h2></button>
+        <!--<div class="card">-->
+            <div id="hb" class="page active">
+                <h1>漢堡類</h1>
+                <p>採用蓬鬆的漢堡體，與其他店家扎實的口感不同，加上美乃滋增加風味，與主食搭配起來更加可口。</p>
+                <p>內容物：全熟荷包蛋、美乃滋、番茄醬、胡椒粉、生萵苣或生小黃瓜(依季節更換供應)</p>
+                <div class="menu-item">
+                    <span class="left like">豬肉蛋堡</span>
+                    <span class="right">$40</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">起司蛋堡</span>
+                    <span class="right">$40</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">鮪魚蛋堡</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">培根蛋堡</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">香雞蛋堡</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">豬排蛋堡</span>
+                    <span class="right">$50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">燻雞蛋堡</span>
+                    <span class="right">$50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">章魚蛋堡</span>
+                    <span class="right">$50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">檸檬雞排堡</span>
+                    <span class="right">$50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">卡拉雞腿堡</span>
+                    <span class="right">$60</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">總匯蛋堡</span>
+                    <div class="smallfont">火腿與豬肉</div>
+                    <span class="right">$55</span>
+                </div>
+            </div>
+            <div id="ts" class="page active">
+                <h1>吐司類</h1>
+                <p>漢堡採用蓬鬆口感，吐司就必須扎實又柔軟了，將表面烤過香氣爆棚。</p>
+                <p>內容物：全熟荷包蛋、美乃滋、番茄醬、胡椒粉、生萵苣或生小黃瓜(依季節更換供應)</p>
+                <div class="menu-item">
+                    <span class="left">煎蛋吐司</span>
+                    <span class="right">$30</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">火腿蛋吐司</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">肉鬆蛋吐司</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">起司蛋吐司</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">培根蛋吐司</span>
+                    <span class="right">$40</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">鮪魚蛋吐司</span>
+                    <span class="right">$40</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">章魚蛋吐司</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">燻雞蛋吐司</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">豬排蛋吐司</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">檸檬雞吐司</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">卡拉蛋吐司</span>
+                    <span class="right">$60</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">烤總匯</span>
+                    <div class="smallfont">火腿與豬肉</div>
+                    <span class="right">$55</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">烤吐司</span>
+                    <div class="smallfont">草莓、花生、巧克力、奶酥</div>
+                    <span class="right">$20</span>
+                </div>
+            </div>
+            <div id="tb" class="page active">
+                <h1>蛋餅類</h1>
+                <p>自製的粉漿蛋餅，與其他店家不同的是，我們前一天製作後會冷藏一個晚上，使餅皮更加Q彈可口。</p>
+                <p>餅皮於製作日隔日使用完畢與報廢</p>
+                <p>內容物：胡椒粉、醬油或甜辣醬(依顧客口味)</p>
+                <div class="menu-item">
+                    <span class="left">原味蛋餅</span>
+                    <span class="right">$30</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">玉米蛋餅</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">肉鬆蛋餅</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">火腿蛋餅</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">起司蛋餅</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">培根蛋餅</span>
+                    <span class="right">$40</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">鮪魚蛋餅</span>
+                    <span class="right">$40</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">燻雞蛋餅</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">豬排蛋餅</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">章魚燒蛋餅</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">檸檬雞蛋餅</span>
+                    <span class="right">$45</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">卡拉蛋餅</span>
+                    <span class="right">$60</span>
+                </div>
+            </div>
+            <div id="zs" class="page active">
+                <h1>中式類</h1>
+                <p>其他好吃的東西都在這</p>
+                <p>內容物：胡椒粉、番茄醬(依顧客口味)、醬油或甜辣醬(依顧客口味)</p>
+                <div class="menu-item">
+                    <span class="left">荷包蛋</span>
+                    <span class="right">$15</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">鍋貼</span>
+                    <span class="right">$30</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">蘿蔔糕</span>
+                    <span class="right">$25</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">鐵板麵</span>
+                    <div class="smallfont">蘑菇、黑胡椒</div>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">鐵板麵加蛋</span>
+                    <div class="smallfont">蘑菇、黑胡椒</div>
+                    <span class="right">$50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left like">抓餅加蛋</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">卡拉雞塊</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">雞塊</span>
+                    <span class="right">$35</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">薯條</span>
+                    <span class="right">$25</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">薯餅</span>
+                    <span class="right">$20</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">小熱狗(5支)</span>
+                    <span class="right">$20</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">雞米花</span>
+                    <span class="right">$20</span>
+                </div>
+            </div>
+            <div id="iz" class="page active">
+                <h1>飲料類</h1>
+                <p>每日早晨現做飲料，現磨豆漿。</p>
+                <p>內容物：砂糖、冰塊(依顧客口味)</p>
+                <div class="menu-item">
+                    <span class="left like">豆漿</span>
+                    <span class="right">大$20 小$15</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">紅茶</span>
+                    <span class="right">大$20 小$15</span>
+                </div>
+                <div class="menu-item">
+                    <span class="left">奶茶</span>
+                    <span class="right">大$25 小$20</span>
+                </div>
+            </div>
+
+            <script>
+                function showPage(pageId) {
+                // 取得所有頁面
+                let pages = document.querySelectorAll('.page');
+                // 全部隱藏
+                pages.forEach(p => p.classList.remove('active'));
+                // 顯示指定的那一頁
+                document.getElementById(pageId).classList.add('active');
+                }
+                function AllPage() {
+                // 取得所有頁面
+                let pages = document.querySelectorAll('.page');
+                // 全部隱藏
+                pages.forEach(p => p.classList.remove('active'));
+
+                pages.forEach(p => p.classList.add('active'));
+                }
+            </script>
+        <!--</div>-->
+    </div>
+    <div class="card_bottom">
+        <div class="bottomfont">
+            <h1>餐車早餐店</h1>
+            <div class="bottomfont">04-25560387 | <a href="https://maps.app.goo.gl/SXVT5z4efrQahvga9" target="_blank">台中市后里區南村路151號</a></div>
+        </div>
+    </div>
+</body>
+</html>
